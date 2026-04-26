@@ -1,0 +1,2087 @@
+     <!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>과학 4-1_1 자석의 이용 가상 실험실</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Jua&display=swap');
+@font-face{font-family:'GyeonggiTitle';src:url('https://cdn.jsdelivr.net/gh/projectnoonnu/2410-3@1.0/Title_Bold.woff') format('woff');font-weight:700;font-display:swap;}
+@font-face{font-family:'GyeonggiTitle';src:url('https://cdn.jsdelivr.net/gh/projectnoonnu/2410-3@1.0/Title_Medium.woff') format('woff');font-weight:500;font-display:swap;}
+@font-face{font-family:'GyeonggiBatang';src:url('https://cdn.jsdelivr.net/gh/projectnoonnu/2410-3@1.0/Batang_Bold.woff') format('woff');font-weight:700;font-display:swap;}
+@font-face{font-family:'GyeonggiBatang';src:url('https://cdn.jsdelivr.net/gh/projectnoonnu/2410-3@1.0/Batang_Regular.woff') format('woff');font-weight:400;font-display:swap;}
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{--stage-w:1366;--stage-h:768;--stage-scale:1;--safe-top:env(safe-area-inset-top,0px);--safe-right:env(safe-area-inset-right,0px);--safe-bottom:env(safe-area-inset-bottom,0px);--safe-left:env(safe-area-inset-left,0px);}
+html,body{width:100%;height:100%;overflow:hidden;background:#222;}
+body{font-family:'Jua',sans-serif;user-select:none;}
+#appViewport{position:fixed;inset:0;overflow:hidden;background:#222;}
+#appStage{position:absolute;left:0;top:0;width:1366px;height:768px;transform-origin:top left;background:#222;}
+#mainScreen,#experimentScreen{position:absolute;inset:0;width:1366px;height:768px;}
+#mainScreen{background:url('./main.png') center center / cover no-repeat;display:flex;flex-direction:column;align-items:center;justify-content:center;position:absolute;}
+.big-title{position:absolute;top:18px;left:30px;font-size:56px;color:#fff;text-shadow:3px 3px 0 #C88A00,5px 5px 10px rgba(0,0,0,0.15);font-weight:bold;z-index:1;}
+.card-container{background:rgba(255,248,225,0.93);border:4px solid #5D4037;border-radius:25px;padding:60px 45px 45px;display:flex;gap:30px;position:relative;box-shadow:0 8px 30px rgba(0,0,0,0.25);}
+.card-container .subtitle{position:absolute;top:-22px;left:50%;transform:translateX(-50%);background:#5D4037;color:#FFB300;padding:9px 48px;border-radius:12px;font-size:26px;white-space:nowrap;letter-spacing:3px;}
+.mission-card{appearance:none;-webkit-appearance:none;width:260px;height:300px;background:#FFFDE7;border:3px solid #D7CCC8;border-radius:20px;display:flex;align-items:center;justify-content:center;text-align:center;font-size:28px;color:#5D4037;cursor:pointer;transition:transform 0.3s cubic-bezier(.4,0,.2,1),box-shadow 0.3s;padding:25px;line-height:1.4;font-weight:bold;font-family:'Jua',sans-serif;touch-action:manipulation;}
+.mission-card:hover{transform:scale(1.08);box-shadow:0 10px 30px rgba(93,64,55,0.3);}
+#experimentScreen{display:none;position:absolute;background:#333;}
+#threeCanvas{width:1366px;height:768px;display:block;touch-action:pinch-zoom;}
+.ui-btn{position:absolute;padding:11px 26px;border:none;border-radius:12px;font-family:'Jua',sans-serif;font-size:19px;cursor:pointer;z-index:100;transition:transform 0.15s,box-shadow 0.15s;box-shadow:0 3px 10px rgba(0,0,0,0.2);touch-action:manipulation;}
+.ui-btn:hover{transform:scale(1.06);}.ui-btn:active{transform:scale(0.97);}
+#btnBack{top:15px;right:200px;background:#FF7043;color:#fff;}
+#btnHome{top:15px;right:85px;background:#66BB6A;color:#fff;}
+#btnMusic{top:15px;right:15px;background:rgba(255,255,255,0.92);color:#5D4037;font-size:22px;padding:9px 14px;border-radius:50%;width:48px;height:48px;display:flex;align-items:center;justify-content:center;box-shadow:0 3px 12px rgba(0,0,0,0.18);border:2px solid #D7CCC8;}
+#btnMusic:hover{background:#fff;}
+#btnMusicMain{position:absolute;top:18px;right:24px;background:rgba(255,255,255,0.92);color:#5D4037;font-size:26px;padding:10px 15px;border-radius:50%;width:56px;height:56px;display:flex;align-items:center;justify-content:center;box-shadow:0 3px 12px rgba(0,0,0,0.18);border:2px solid #D7CCC8;cursor:pointer;z-index:10;font-family:'Jua',sans-serif;transition:transform 0.15s;}
+#btnMusicMain:hover{transform:scale(1.1);}
+#checkPoleBtn{top:50%;left:50%;transform:translate(-50%,-50%);background:linear-gradient(135deg,#42A5F5,#1E88E5);color:#fff;animation:pulse 1s ease-in-out infinite;font-size:28px;padding:18px 40px;border-radius:18px;}
+@keyframes pulse{0%,100%{transform:translate(-50%,-50%) scale(1);}50%{transform:translate(-50%,-50%) scale(1.1);}}
+#checkPoleBtn.no-pulse{animation:none;}
+#catWrap{position:absolute;z-index:100;display:none;flex-direction:column;align-items:center;gap:0;pointer-events:none;left:50% !important;top:50% !important;right:auto !important;transform:translate(-50%,-50%);}
+#catWrap .bubble{background:#fff;border:6px solid #5D4037;border-radius:40px;padding:32px 44px;font-size:30px;color:#333;max-width:700px;position:relative;margin-bottom:16px;line-height:1.6;box-shadow:0 6px 24px rgba(0,0,0,0.15);text-align:center;}
+#catWrap .bubble::after{content:'';position:absolute;bottom:-28px;left:50%;transform:translateX(-50%);border:14px solid transparent;border-top-color:#fff;}
+#catWrap .bubble::before{content:'';position:absolute;bottom:-36px;left:50%;transform:translateX(-50%);border:18px solid transparent;border-top-color:#5D4037;}
+.popup-overlay{position:absolute;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.45);display:flex;align-items:center;justify-content:center;z-index:200;animation:fadeIn .25s;}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.popup-box{background:#fff;border-radius:22px;padding:32px 42px;text-align:center;position:relative;min-width:300px;box-shadow:0 12px 50px rgba(0,0,0,0.35);animation:popIn .3s cubic-bezier(.4,0,.2,1);}
+@keyframes popIn{from{transform:scale(.85);opacity:0}to{transform:scale(1);opacity:1}}
+.popup-box h3{font-size:26px;color:#333;margin-bottom:18px;}
+.popup-box .x-btn{position:absolute;top:10px;right:15px;background:none;border:none;font-size:26px;cursor:pointer;color:#aaa;transition:color .15s;}
+.popup-box .x-btn:hover{color:#333;}
+.choice-btn{padding:13px 36px;margin:5px 10px;border:none;border-radius:12px;font-family:'Jua',sans-serif;font-size:21px;cursor:pointer;color:#fff;transition:transform .15s;}
+.choice-btn:hover{transform:scale(1.06);}
+.choice-btn.n-pole{background:#E53935;}.choice-btn.s-pole{background:#1565C0;}
+.home-btn{display:inline-block;margin-top:16px;padding:12px 34px;background:#66BB6A;color:#fff;border:none;border-radius:12px;font-family:'Jua',sans-serif;font-size:20px;cursor:pointer;transition:transform .15s;}
+.home-btn:hover{transform:scale(1.06);}
+.info-box{position:absolute;z-index:100;background:#E3F2FD;border:2px solid #42A5F5;border-radius:14px;padding:16px 40px 16px 20px;font-size:18px;color:#1565C0;box-shadow:0 3px 12px rgba(0,0,0,0.12);animation:fadeIn .3s;}
+.info-box .x-btn{position:absolute;top:6px;right:10px;background:none;border:none;font-size:18px;cursor:pointer;color:#999;}
+#missionCardWrap{position:absolute;right:20px;top:70px;z-index:90;display:none;border-radius:16px;overflow:hidden;box-shadow:0 6px 20px rgba(0,0,0,0.25);border:3px solid #5D4037;background:#fff;}
+#barMagnetEl{position:absolute;z-index:150;display:none;cursor:grab;pointer-events:auto;transform-origin:center center;touch-action:pinch-zoom;}
+#barMagnetEl svg{width:62px;height:250px;}
+@keyframes shake{0%,100%{transform:translateX(0);}25%{transform:translateX(-8px);}75%{transform:translateX(8px);}}
+.quiz-feedback{font-size:26px;margin-top:16px;font-family:'Jua',sans-serif;min-height:36px;}
+.quiz-feedback.wrong{color:#E53935;}
+.quiz-feedback.correct{color:#1E88E5;}
+.activity-overlay{position:absolute;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);display:flex;align-items:center;justify-content:center;z-index:180;animation:fadeIn .3s;}
+.activity-box{background:#FFFDE7;border:5px solid #5D4037;border-radius:22px;padding:36px 44px 32px;min-width:340px;max-width:640px;box-shadow:0 12px 50px rgba(0,0,0,0.35);animation:popIn .3s cubic-bezier(.4,0,.2,1);position:relative;}
+.activity-box h3{font-family:'GyeonggiTitle','GyeonggiBatang',serif;font-weight:700;font-size:28px;color:#5D4037;text-align:center;margin-bottom:22px;padding-bottom:14px;border-bottom:3px dashed #D7CCC8;}
+.activity-box ol{list-style:none;counter-reset:step;padding:0;margin:0;}
+.activity-box ol li{font-family:'GyeonggiBatang',serif;font-weight:400;font-size:21px;color:#333;line-height:1.7;margin-bottom:12px;padding-left:32px;position:relative;}
+.activity-box ol li::before{counter-increment:step;content:counter(step)'.';position:absolute;left:0;top:0;font-weight:700;color:#5D4037;font-size:21px;font-family:'GyeonggiTitle','GyeonggiBatang',serif;}
+.activity-box .ok-btn{display:block;margin:18px auto 0;padding:12px 48px;background:#5D4037;color:#FFB300;border:none;border-radius:12px;font-family:'Jua',sans-serif;font-size:20px;cursor:pointer;transition:transform .15s;}
+.activity-box .ok-btn:hover{transform:scale(1.06);}
+</style>
+</head>
+<body>
+<div id="appViewport">
+<div id="appStage">
+<div id="mainScreen">
+    <div class="big-title">과학 4-1 1. 자석의 이용</div>
+    <button id="btnMusicMain" onclick="toggleBGM()">🔊</button>
+    <div class="card-container">
+        <div class="subtitle">고리 자석 탑 쌓기 가상 실험실</div>
+        <button type="button" class="mission-card" onclick="startMission(1)">가장 높은<br>탑 쌓기</button>
+        <button type="button" class="mission-card" onclick="startMission(2)">가장 낮은<br>탑 쌓기</button>
+        <button type="button" class="mission-card" onclick="startMission(3)">똑같은 모양으로<br>탑 쌓기</button>
+    </div>
+</div>
+<div id="experimentScreen">
+    <canvas id="threeCanvas"></canvas>
+    <button class="ui-btn" id="btnBack" onclick="goBack()">돌아가기</button>
+    <button class="ui-btn" id="btnHome" onclick="goHome()">처음으로</button>
+    <button class="ui-btn" id="btnMusic" onclick="toggleBGM()">🔊</button>
+    <button class="ui-btn" id="checkPoleBtn" onclick="startPoleCheck()">고리 자석의 극 확인하기</button>
+    <div id="catWrap"></div>
+    <div id="barMagnetEl"></div>
+    <div id="missionCardWrap"></div>
+</div>
+</div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+
+const STAGE_W = 1366;
+const STAGE_H = 768;
+function getViewportSize(){
+    const vv = window.visualViewport;
+    return {
+        width: vv ? vv.width : window.innerWidth,
+        height: vv ? vv.height : window.innerHeight
+    };
+}
+function layoutAppStage(){
+    const viewport = document.getElementById('appViewport');
+    const stage = document.getElementById('appStage');
+    if(!viewport || !stage) return;
+    const {width, height} = getViewportSize();
+    const scale = Math.min(width / STAGE_W, height / STAGE_H);
+    const left = Math.max(0, (width - STAGE_W * scale) / 2);
+    const top = Math.max(0, (height - STAGE_H * scale) / 2);
+    stage.style.transform = `translate(${left}px, ${top}px) scale(${scale})`;
+    document.documentElement.style.setProperty('--stage-scale', String(scale));
+}
+function resetBarMagnetPosition(){
+    const bm = document.getElementById('barMagnetEl');
+    if(!bm) return;
+    bm.style.left = '86px';
+    bm.style.top = '72px';
+}
+
+/* ============================================================
+   CONSTANTS
+   ============================================================ */
+const RO = 0.75;          // ring outer radius
+const RI = 0.28;          // ring inner radius (bigger than pole so no clipping)
+const RH = 0.32;          // ring height
+const PR = 0.12;          // pole radius (thinner than ring hole)
+const BY = 0.0;           // base Y (table surface)
+const BT = 0.18;          // base thickness
+const G_REP = 0.48;       // gap when repelling
+const G_ATT = 0;          // gap when attracting (rings actually touch)
+const G_PREVIEW = 0.12;   // preview gap while dragging above stacked ring
+const STACK_PREVIEW_STEP = 1.70;
+const C12 = [0xE53935, 0xFF8F00, 0xFDD835, 0x43A047, 0x1E88E5, 0x8E24AA];
+const C3  = [0x1E88E5, 0x1E88E5, 0x1E88E5, 0x1E88E5, 0x1E88E5, 0x1E88E5];
+
+/* Even spacing: 3 left, 3 right */
+const LPOS = [{x:-4.0,z:2.0},{x:-5.5,z:0.0},{x:-4.0,z:-2.0}];
+const RPOS = [{x:4.0,z:2.0},{x:5.5,z:0.0},{x:4.0,z:-2.0}];
+const DROP_R = 3.5;
+const DRAG_ELEV = 1.5;
+
+/* ============================================================
+   SOUND EFFECTS (Web Audio API)
+   ============================================================ */
+let audioCtx = null;
+function getAudioCtx(){
+    if(!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    return audioCtx;
+}
+
+function playAttractSound(){
+    const ctx = getAudioCtx();
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.connect(gain); gain.connect(ctx.destination);
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(600, ctx.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(300, ctx.currentTime + 0.15);
+    gain.gain.setValueAtTime(0.3, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.2);
+    osc.start(ctx.currentTime);
+    osc.stop(ctx.currentTime + 0.2);
+}
+
+function playRepelSound(){
+    const ctx = getAudioCtx();
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.connect(gain); gain.connect(ctx.destination);
+    osc.type = 'sawtooth';
+    osc.frequency.setValueAtTime(200, ctx.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(500, ctx.currentTime + 0.15);
+    gain.gain.setValueAtTime(0.2, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.25);
+    osc.start(ctx.currentTime);
+    osc.stop(ctx.currentTime + 0.25);
+}
+
+function playFlipSound(){
+    const ctx = getAudioCtx();
+    const osc1 = ctx.createOscillator();
+    const osc2 = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc1.connect(gain); osc2.connect(gain); gain.connect(ctx.destination);
+    osc1.type = 'triangle';
+    osc2.type = 'sine';
+    osc1.frequency.setValueAtTime(880, ctx.currentTime);
+    osc1.frequency.exponentialRampToValueAtTime(1200, ctx.currentTime + 0.08);
+    osc2.frequency.setValueAtTime(1100, ctx.currentTime + 0.08);
+    osc2.frequency.exponentialRampToValueAtTime(880, ctx.currentTime + 0.16);
+    gain.gain.setValueAtTime(0.15, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.18);
+    osc1.start(ctx.currentTime);
+    osc1.stop(ctx.currentTime + 0.1);
+    osc2.start(ctx.currentTime + 0.06);
+    osc2.stop(ctx.currentTime + 0.18);
+}
+
+function playCorrectSound(){
+    const ctx = getAudioCtx();
+    // 딩동댕! (C5 → E5 → G5) - bright ascending three-note chime
+    const notes = [
+        {freq: 523, time: 0,    dur: 0.18}, // 딩 (C5)
+        {freq: 659, time: 0.14, dur: 0.18}, // 동 (E5)
+        {freq: 784, time: 0.28, dur: 0.25}, // 댕 (G5) - slightly longer
+    ];
+    notes.forEach(n => {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.connect(gain); gain.connect(ctx.destination);
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(n.freq, ctx.currentTime + n.time);
+        gain.gain.setValueAtTime(0.28, ctx.currentTime + n.time);
+        gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + n.time + n.dur);
+        osc.start(ctx.currentTime + n.time);
+        osc.stop(ctx.currentTime + n.time + n.dur);
+        // Add harmonics for bell-like ring
+        const osc2 = ctx.createOscillator();
+        const gain2 = ctx.createGain();
+        osc2.connect(gain2); gain2.connect(ctx.destination);
+        osc2.type = 'sine';
+        osc2.frequency.setValueAtTime(n.freq * 2, ctx.currentTime + n.time);
+        gain2.gain.setValueAtTime(0.08, ctx.currentTime + n.time);
+        gain2.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + n.time + n.dur * 0.6);
+        osc2.start(ctx.currentTime + n.time);
+        osc2.stop(ctx.currentTime + n.time + n.dur);
+    });
+}
+
+function playWrongSound(){
+    const ctx = getAudioCtx();
+    // 뚜뚜 - two short descending low tones with rhythm
+    const notes = [
+        {freq: 330, time: 0,    dur: 0.15},  // 뚜 (E4)
+        {freq: 262, time: 0.18, dur: 0.22},  // 뚜 (C4) - lower, slightly longer
+    ];
+    notes.forEach(n => {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.connect(gain); gain.connect(ctx.destination);
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(n.freq, ctx.currentTime + n.time);
+        gain.gain.setValueAtTime(0.22, ctx.currentTime + n.time);
+        gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + n.time + n.dur);
+        osc.start(ctx.currentTime + n.time);
+        osc.stop(ctx.currentTime + n.time + n.dur);
+    });
+}
+
+function playSuccessSound(){
+    const ctx = getAudioCtx();
+    // 딩동댕동! 짧은 팡파레 (C5→E5→G5→C6) with rhythm
+    const notes = [
+        {freq: 523,  time: 0,    dur: 0.15}, // C5
+        {freq: 659,  time: 0.13, dur: 0.15}, // E5
+        {freq: 784,  time: 0.26, dur: 0.15}, // G5
+        {freq: 1047, time: 0.42, dur: 0.35}, // C6 - hold longer
+    ];
+    notes.forEach(n => {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.connect(gain); gain.connect(ctx.destination);
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(n.freq, ctx.currentTime + n.time);
+        gain.gain.setValueAtTime(0.22, ctx.currentTime + n.time);
+        gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + n.time + n.dur);
+        osc.start(ctx.currentTime + n.time);
+        osc.stop(ctx.currentTime + n.time + n.dur);
+        // Bell harmonics
+        const osc2 = ctx.createOscillator();
+        const gain2 = ctx.createGain();
+        osc2.connect(gain2); gain2.connect(ctx.destination);
+        osc2.type = 'sine';
+        osc2.frequency.setValueAtTime(n.freq * 2, ctx.currentTime + n.time);
+        gain2.gain.setValueAtTime(0.06, ctx.currentTime + n.time);
+        gain2.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + n.time + n.dur * 0.5);
+        osc2.start(ctx.currentTime + n.time);
+        osc2.stop(ctx.currentTime + n.time + n.dur);
+    });
+}
+
+function playRetrySound(){
+    const ctx = getAudioCtx();
+    // 뚜루루 - three descending notes (G4→E4→C4) with gentle rhythm
+    const notes = [
+        {freq: 392, time: 0,    dur: 0.16}, // G4
+        {freq: 330, time: 0.15, dur: 0.16}, // E4
+        {freq: 262, time: 0.30, dur: 0.25}, // C4 - slightly longer
+    ];
+    notes.forEach(n => {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.connect(gain); gain.connect(ctx.destination);
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(n.freq, ctx.currentTime + n.time);
+        gain.gain.setValueAtTime(0.2, ctx.currentTime + n.time);
+        gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + n.time + n.dur);
+        osc.start(ctx.currentTime + n.time);
+        osc.stop(ctx.currentTime + n.time + n.dur);
+    });
+}
+
+/* ============================================================
+   SVG ASSETS
+   ============================================================ */
+const CAT_HTML = `<img src="./cat.png" alt="고양이 캐릭터" style="width:240px; height:auto; flex-shrink:0; display:block;">`;
+
+const BAR_SVG = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 56 220" width="62" height="250">
+<defs><linearGradient id="sg" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#1565C0"/><stop offset="100%" stop-color="#42A5F5"/></linearGradient>
+<linearGradient id="ng" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#C62828"/><stop offset="100%" stop-color="#EF5350"/></linearGradient></defs>
+<path d="M9,4 H47 Q52,4 52,9 V110 H4 V9 Q4,4 9,4 Z" fill="url(#sg)" stroke="#0D47A1" stroke-width="2"/>
+<path d="M4,110 H52 V211 Q52,216 47,216 H9 Q4,216 4,211 Z" fill="url(#ng)" stroke="#B71C1C" stroke-width="2"/>
+<text x="28" y="34" text-anchor="middle" fill="#FFF" font-size="28" font-weight="bold" font-family="sans-serif">S</text>
+<text x="28" y="202" text-anchor="middle" fill="#FFF" font-size="28" font-weight="bold" font-family="sans-serif">N</text>
+<!-- Invisible marker at the exact visible N-pole tip: y=217 = path bottom (216) + half stroke (1).
+     Used at runtime by getBoundingClientRect() to measure the tip's true screen position,
+     bypassing all manual math (preserveAspectRatio, CSS transforms, stage scale, etc.). -->
+<rect id="bmTipMarker" x="27.5" y="216.5" width="1" height="1" fill="none" stroke="none" pointer-events="none"/>
+</svg>`;
+
+function m3Card(){
+    return `<div style="width:240px;height:346px;background:#F5F5F5;border-radius:14px;position:relative;overflow:hidden;box-shadow:inset 0 0 0 1px rgba(0,0,0,0.06);display:flex;align-items:center;justify-content:center;">
+        <img src="./tower-card.png" alt="탑 쌓기 카드 이미지" style="width:100%;height:100%;object-fit:cover;border-radius:14px;">
+    </div>`;
+}
+
+/* ============================================================
+   STATE
+   ============================================================ */
+let curM=0, scene, cam, ren, ray, mse;
+let pStand, rings=[], onPole=[];
+let pChecked=false, checking=false, idCount=0;
+let bmActive=false, dragBM=false, bmOX=0, bmOY=0;
+let dragRing=null, dragOff=null, isDrag=false, isRot=false;
+let pmx=0, pmy=0, animId=null;
+let cTheta=0, cPhi=Math.PI/4.5, cDist=14;
+let attachRing=null, attachOrigY=0, quizUp=false;
+
+/* Physics animation state for pole stacking */
+let physicsAnims = []; // array of active physics animations
+
+function cPos(){ return new THREE.Vector3(cDist*Math.sin(cPhi)*Math.sin(cTheta), cDist*Math.cos(cPhi), cDist*Math.sin(cPhi)*Math.cos(cTheta)); }
+function updCam(){ cam.position.copy(cPos()); cam.lookAt(0,1.8,0); }
+
+/* ============================================================
+   INIT THREE
+   ============================================================ */
+function initThree(){
+    const c = document.getElementById('threeCanvas');
+    ren = new THREE.WebGLRenderer({canvas:c, antialias:true, logarithmicDepthBuffer:true});
+    ren.setSize(STAGE_W, STAGE_H, false);
+    ren.setPixelRatio(Math.min(devicePixelRatio, 2));
+    ren.shadowMap.enabled = true;
+    ren.shadowMap.type = THREE.PCFSoftShadowMap;
+
+    scene = new THREE.Scene();
+    scene.background = new THREE.Color(0xE0D8D0);
+    cam = new THREE.PerspectiveCamera(40, STAGE_W/STAGE_H, 0.1, 100);
+    updCam();
+
+    scene.add(new THREE.AmbientLight(0xffffff, 0.55));
+    const dl = new THREE.DirectionalLight(0xffffff, 0.75);
+    dl.position.set(5,12,8); dl.castShadow=true; dl.shadow.mapSize.set(2048,2048);
+    dl.shadow.camera.left = -12;
+    dl.shadow.camera.right = 12;
+    dl.shadow.camera.top = 12;
+    dl.shadow.camera.bottom = -12;
+    dl.shadow.camera.near = 0.5;
+    dl.shadow.camera.far = 30;
+    scene.add(dl);
+    const pl = new THREE.PointLight(0xFFE0B2, 0.25, 20);
+    pl.position.set(-4,6,3); scene.add(pl);
+
+    ray = new THREE.Raycaster();
+    mse = new THREE.Vector2();
+
+    // Table
+    const tbl = new THREE.Mesh(
+        new THREE.BoxGeometry(22, 0.3, 12),
+        new THREE.MeshStandardMaterial({color:0x8D6E63, roughness:0.85})
+    );
+    tbl.position.y = BY - 0.15; tbl.receiveShadow = true;
+    scene.add(tbl);
+
+    // Wall
+    const wl = new THREE.Mesh(
+        new THREE.PlaneGeometry(24, 14),
+        new THREE.MeshStandardMaterial({color:0xECEFF1, roughness:0.9})
+    );
+    wl.position.set(0, 6.5, -6);
+    scene.add(wl);
+
+    addEventListener('resize', ()=>{
+        cam.aspect = STAGE_W/STAGE_H;
+        cam.updateProjectionMatrix();
+        ren.setSize(STAGE_W, STAGE_H, false);
+    });
+}
+
+/* ============================================================
+   POLE STAND
+   The pole is rendered BEHIND rings using polygonOffset
+   ============================================================ */
+function mkStand(){
+    if(pStand) scene.remove(pStand);
+    pStand = new THREE.Group();
+
+    const baseMat = new THREE.MeshStandardMaterial({color:0xDEB887, roughness:0.55});
+    const base = new THREE.Mesh(new THREE.CylinderGeometry(1.7, 1.7, BT, 48), baseMat);
+    base.position.y = BY + BT/2;
+    base.castShadow = true; base.receiveShadow = true;
+    pStand.add(base);
+
+    const poleMat = new THREE.MeshStandardMaterial({
+        color: 0xD4A44C,
+        roughness: 0.5,
+        polygonOffset: true,
+        polygonOffsetFactor: 2,
+        polygonOffsetUnits: 2
+    });
+    const pole = new THREE.Mesh(new THREE.CylinderGeometry(PR, PR, 5.8, 24), poleMat);
+    pole.position.y = BY + BT + 2.9;
+    pole.castShadow = true;
+    pole.renderOrder = 0;
+    pStand.add(pole);
+
+    const topCap = new THREE.Mesh(new THREE.SphereGeometry(PR*1.1, 16, 16), poleMat);
+    topCap.position.y = BY + BT + 5.8;
+    topCap.renderOrder = 0;
+    pStand.add(topCap);
+
+    scene.add(pStand);
+}
+
+/* ============================================================
+   RING MAGNET - simple LatheGeometry
+   ============================================================ */
+let ringGeoCache = null;
+
+function makeRingGeometry(){
+    const pts = [];
+    const n = 20, ro = RO, ri = RI, hh = RH/2;
+    for(let i=0;i<=n;i++) pts.push(new THREE.Vector2(ri+(i/n)*(ro-ri), -hh));
+    for(let i=0;i<=n;i++) pts.push(new THREE.Vector2(ro, -hh+(i/n)*2*hh));
+    for(let i=0;i<=n;i++) pts.push(new THREE.Vector2(ro-(i/n)*(ro-ri), hh));
+    for(let i=0;i<=n;i++) pts.push(new THREE.Vector2(ri, hh-(i/n)*2*hh));
+    return new THREE.LatheGeometry(pts, 48);
+}
+
+function mkRing(col, tp, idx){
+    if(!ringGeoCache) ringGeoCache = makeRingGeometry();
+
+    const g = new THREE.Group();
+
+    const mat = new THREE.MeshStandardMaterial({
+        color: col,
+        roughness: 0.35,
+        metalness: 0.05
+    });
+    const mesh = new THREE.Mesh(ringGeoCache, mat);
+    mesh.castShadow = true;
+    mesh.receiveShadow = true;
+    mesh.renderOrder = 1;
+    g.add(mesh);
+
+    const bp = tp === 'N' ? 'S' : 'N';
+    /* Top surface sticker label */
+    const labelR = (RI + RO) * 0.42;
+    const tl = mkLabel(tp);
+    tl.position.set(0, RH/2 + 0.02, labelR);
+    tl.visible = false; g.add(tl);
+
+    /* Side labels (stickers on outer surface) */
+    const sideTop = mkSideLabel(tp);
+    sideTop.position.set(0, RH*0.25, 0);
+    sideTop.visible = false; g.add(sideTop);
+
+    const sideBot = mkSideLabel(bp);
+    sideBot.position.set(0, -RH*0.25, 0);
+    sideBot.visible = false; g.add(sideBot);
+
+    /* Dashed midline (hidden until identified) */
+    const poleVis = mkPoleVisualization(tp, bp);
+    poleVis.visible = false;
+    g.add(poleVis);
+
+    g.userData = {
+        type:'ring', index:idx,
+        topPole:tp, bottomPole:bp,
+        identified:false, onPole:false,
+        topLabel:tl, sideTopLabel:sideTop, sideBotLabel:sideBot,
+        bottomLabel:null, dashSprite:null,
+        poleVis: poleVis,
+        colorHex:col, attracts:false, originalPos:null,
+        lastClickTime: 0
+    };
+    scene.add(g);
+    return g;
+}
+
+/* Side label sticker (stuck on ring outer surface) */
+function mkSideLabel(p){
+    const cv = document.createElement('canvas');
+    cv.width = 128; cv.height = 64;
+    const c = cv.getContext('2d');
+    /* Rounded rect sticker with white border */
+    c.fillStyle = p==='N' ? 'rgba(229,57,53,0.95)' : 'rgba(21,101,192,0.95)';
+    c.beginPath(); rR(c,4,4,120,56,14); c.fill();
+    c.lineWidth = 3; c.strokeStyle = '#fff';
+    c.beginPath(); rR(c,4,4,120,56,14); c.stroke();
+    c.font = 'bold 36px sans-serif';
+    c.textAlign = 'center'; c.textBaseline = 'middle';
+    c.fillStyle = '#FFF'; c.fillText(p+'극', 64, 34);
+
+    const tex = new THREE.CanvasTexture(cv);
+    const mat = new THREE.MeshBasicMaterial({
+        map: tex, transparent: true,
+        depthTest: true, depthWrite: false,
+        side: THREE.DoubleSide
+    });
+    /* Curved plane bent to ring outer surface */
+    const arcSpan = 0.6;
+    const segs = 12;
+    const stickerH = RH * 0.42;
+    const stickerR = RO + 0.01;
+    const geom = new THREE.PlaneGeometry(1, stickerH, segs, 1);
+    const pos = geom.attributes.position;
+    for(let i = 0; i < pos.count; i++){
+        const u = (pos.getX(i) + 0.5);
+        const angle = (u - 0.5) * arcSpan;
+        pos.setX(i, Math.sin(angle) * stickerR);
+        pos.setZ(i, Math.cos(angle) * stickerR);
+    }
+    geom.computeVertexNormals();
+    const mesh = new THREE.Mesh(geom, mat);
+    mesh.renderOrder = 2;
+    return mesh;
+}
+
+/* Create dashed midline circle + top/bottom colored bands */
+function mkPoleVisualization(topPole, bottomPole){
+    return new THREE.Group();
+}
+
+function mkLabel(p){
+    const cv = document.createElement('canvas');
+    cv.width = 128; cv.height = 128;
+    const c = cv.getContext('2d');
+    /* Round sticker */
+    c.beginPath();
+    c.arc(64, 64, 56, 0, Math.PI * 2);
+    c.fillStyle = p==='N' ? '#E53935' : '#1565C0';
+    c.fill();
+    c.lineWidth = 5;
+    c.strokeStyle = '#fff';
+    c.stroke();
+    /* Text */
+    c.font = 'bold 54px sans-serif';
+    c.textAlign = 'center'; c.textBaseline = 'middle';
+    c.fillStyle = '#FFF';
+    c.fillText(p+'극', 64, 67);
+
+    const tex = new THREE.CanvasTexture(cv);
+    const mat = new THREE.MeshBasicMaterial({
+        map: tex, transparent: true,
+        depthTest: true, depthWrite: false,
+        side: THREE.DoubleSide
+    });
+    const plane = new THREE.Mesh(new THREE.PlaneGeometry(0.45, 0.45), mat);
+    plane.rotation.x = -Math.PI / 2; /* lie flat on top surface */
+    plane.renderOrder = 2;
+    return plane;
+}
+function rR(c,x,y,w,h,r){ c.moveTo(x+r,y); c.arcTo(x+w,y,x+w,y+h,r); c.arcTo(x+w,y+h,x,y+h,r); c.arcTo(x,y+h,x,y,r); c.arcTo(x,y,x+w,y,r); c.closePath(); }
+function mkDash(){
+    const cv = document.createElement('canvas');
+    cv.width = 140; cv.height = 8;
+    const c = cv.getContext('2d');
+    c.strokeStyle = '#FFF'; c.lineWidth = 3; c.setLineDash([6,5]);
+    c.beginPath(); c.moveTo(15,4); c.lineTo(125,4); c.stroke();
+    const sp = new THREE.Sprite(new THREE.SpriteMaterial({
+        map: new THREE.CanvasTexture(cv), transparent: true, depthTest: true, depthWrite: false
+    }));
+    sp.scale.set(0.65, 0.04, 1); sp.renderOrder = 2;
+    return sp;
+}
+function refLabel(g){
+    const u = g.userData;
+    if(u.topLabel) g.remove(u.topLabel);
+    if(u.bottomLabel) g.remove(u.bottomLabel);
+    if(u.dashSprite) g.remove(u.dashSprite);
+    if(u.sideTopLabel) g.remove(u.sideTopLabel);
+    if(u.sideBotLabel) g.remove(u.sideBotLabel);
+    if(u.poleVis) g.remove(u.poleVis);
+
+    /* Top surface sticker */
+    const labelR = (RI + RO) * 0.42;
+    const tl = mkLabel(u.topPole);
+    tl.position.set(0, RH/2 + 0.02, labelR);
+    tl.visible = u.identified;
+    g.add(tl);
+    u.topLabel = tl;
+
+    /* Side labels */
+    const sideTop = mkSideLabel(u.topPole);
+    sideTop.position.set(0, RH*0.25, 0);
+    sideTop.visible = u.identified;
+    g.add(sideTop);
+    u.sideTopLabel = sideTop;
+
+    const sideBot = mkSideLabel(u.bottomPole);
+    sideBot.position.set(0, -RH*0.25, 0);
+    sideBot.visible = u.identified;
+    g.add(sideBot);
+    u.sideBotLabel = sideBot;
+
+    u.bottomLabel = null;
+    u.dashSprite = null;
+
+    const pv = mkPoleVisualization(u.topPole, u.bottomPole);
+    pv.visible = u.identified;
+    g.add(pv);
+    u.poleVis = pv;
+}
+
+/* ============================================================
+   SETUP
+   ============================================================ */
+function setup(n){
+    rings.forEach(g => scene.remove(g));
+    rings = []; onPole = [];
+    idCount = 0; pChecked = false; checking = false; bmActive = false;
+    dragBM = false; dragRing = null; isDrag = false; isRot = false;
+    attachRing = null; quizUp = false; ringGeoCache = null;
+    physicsAnims = []; stackSim = null; settleAnim = null; wobbleAnim = null;
+    mkStand();
+    const cols = n===3 ? C3 : C12;
+    let poles;
+    if(n===1) poles = shuf(['N','N','N','S','S','S']);
+    else if(n===2) poles = shuf(['S','N','S','N','S','N']);
+    else poles = shuf(['N','S','N','S','N','S']);
+    for(let i=0; i<6; i++){
+        const p = i<3 ? LPOS[i] : RPOS[i-3];
+        const r = mkRing(cols[i], poles[i], i);
+        r.position.set(p.x, BY+RH/2+0.01, p.z);
+        r.userData.originalPos = r.position.clone();
+        rings.push(r);
+    }
+    cTheta=0; cPhi=Math.PI*0.38; cDist=14;
+    updCam();
+}
+function shuf(a){ const b=[...a]; for(let i=b.length-1;i>0;i--){ const j=0|Math.random()*(i+1); [b[i],b[j]]=[b[j],b[i]]; } return b; }
+
+/* ============================================================
+   START MISSION
+   ============================================================ */
+function startMission(n){
+    curM = n;
+    document.getElementById('mainScreen').style.display = 'none';
+    document.getElementById('experimentScreen').style.display = 'block';
+    if(!ren) initThree();
+    setup(n);
+    /* Hide button first */
+    document.getElementById('checkPoleBtn').style.display = 'none';
+    document.getElementById('checkPoleBtn').classList.remove('no-pulse');
+    document.getElementById('barMagnetEl').style.display = 'none';
+    /* Mission 3: show tower-card immediately on the right side */
+    const mc = document.getElementById('missionCardWrap');
+    if(n === 3){
+        mc.innerHTML = m3Card(); mc.style.display = 'block';
+    } else {
+        mc.style.display = 'none';
+    }
+    if(animId) cancelAnimationFrame(animId);
+    anim();
+
+    /* Show activity process box first */
+    showActivityBox(n, ()=>{
+        /* After OK, show cat speech → then show checkPoleBtn */
+        showCat('고리 자석의 극을 확인해 보세요.', 'left', false, ()=>{
+            document.getElementById('checkPoleBtn').style.display = 'block';
+        }, './cat_voice_1.mp3');
+    });
+}
+
+/* Activity process box per mission */
+function showActivityBox(n, onDone){
+    let step2 = '';
+    if(n === 1) step2 = '고리 자석으로 가장 높은 탑을 쌓는 방법을 생각한 뒤 탑을 쌓습니다.';
+    else if(n === 2) step2 = '고리 자석으로 가장 낮은 탑을 쌓는 방법을 생각한 뒤 탑을 쌓습니다.';
+    else step2 = '카드와 똑같은 모양으로 탑을 쌓는 방법을 생각하면서 탑을 쌓습니다.';
+
+    const ov = document.createElement('div');
+    ov.className = 'activity-overlay';
+    ov.innerHTML = '<div class="activity-box">' +
+        '<h3>탐구 활동 과정</h3>' +
+        '<ol>' +
+        '<li>막대자석을 고리 자석의 윗면에 가까이 하여 고리 자석의 극을 확인합니다.</li>' +
+        '<li>' + step2 + '</li>' +
+        '</ol>' +
+        '<button class="ok-btn">확인</button>' +
+        '</div>';
+    document.getElementById('experimentScreen').appendChild(ov);
+    ov.querySelector('.ok-btn').onclick = ()=>{
+        ov.remove();
+        if(onDone) onDone();
+    };
+}
+
+/* ============================================================
+   CAT - uses generation counter to prevent stale callback issues
+   ============================================================ */
+let catLocked = false;
+let catGeneration = 0; /* incremented each time showCat is called */
+let catHideTimer = null;
+let catVoiceAudio = null;
+
+function cancelCat(){
+    catGeneration++;
+    if(catHideTimer){ clearTimeout(catHideTimer); catHideTimer=null; }
+    if('speechSynthesis' in window) speechSynthesis.cancel();
+    if(catVoiceAudio){
+        catVoiceAudio.pause();
+        catVoiceAudio.currentTime = 0;
+        catVoiceAudio = null;
+    }
+    if(bgm && bgmPlaying) bgm.volume = 0.13;
+    const w = document.getElementById('catWrap');
+    w.style.display='none';
+    w.style.pointerEvents='none';
+    catLocked=false;
+}
+
+function showCat(msg, side, autoHideAfterSpeech, onDone, audioFile){
+    cancelCat(); /* cancel any previous cat */
+    const gen = ++catGeneration;
+    const w = document.getElementById('catWrap');
+    w.innerHTML = '<div class="bubble">' + msg + '</div>' + CAT_HTML;
+    w.style.display = 'flex'; w.style.alignItems = 'center';
+    w.style.left = '50%'; w.style.right = 'auto'; w.style.bottom = 'auto'; w.style.top = '50%';
+    w.style.pointerEvents = 'auto';
+    catLocked = true;
+
+    const hideWrap = () => {
+        if(gen !== catGeneration) return; /* stale - ignore */
+        w.style.display='none';
+        w.style.pointerEvents = 'none';
+        catLocked = false;
+        if('speechSynthesis' in window) speechSynthesis.cancel();
+        if(catVoiceAudio){
+            catVoiceAudio.pause();
+            catVoiceAudio.currentTime = 0;
+            catVoiceAudio = null;
+        }
+        if(onDone) onDone();
+    };
+
+    /* Lower BGM while speaking */
+    if(bgm && bgmPlaying) bgm.volume = 0.05;
+
+    if(audioFile){
+        catVoiceAudio = new Audio(audioFile);
+        catVoiceAudio.onended = ()=>{
+            if(bgm && bgmPlaying) bgm.volume = 0.13;
+            if(gen !== catGeneration) return;
+            if(autoHideAfterSpeech){
+                hideWrap();
+            } else {
+                catHideTimer = setTimeout(hideWrap, 1500);
+            }
+        };
+        catVoiceAudio.onerror = ()=>{
+            if(catVoiceAudio){
+                catVoiceAudio = null;
+            }
+            if('speechSynthesis' in window){
+                const u = new SpeechSynthesisUtterance(msg);
+                u.lang='ko-KR';
+                u.rate = 1.15;
+                u.pitch = 2.0;
+                u.volume = 1.0;
+
+                const voices = speechSynthesis.getVoices();
+                const koVoice = voices.find(v => v.lang.startsWith('ko') && /female|여|child|아이/i.test(v.name))
+                              || voices.find(v => v.lang.startsWith('ko'));
+                if(koVoice) u.voice = koVoice;
+
+                u.onend = ()=>{
+                    if(bgm && bgmPlaying) bgm.volume = 0.13;
+                    if(gen !== catGeneration) return;
+                    if(autoHideAfterSpeech){
+                        hideWrap();
+                    } else {
+                        catHideTimer = setTimeout(hideWrap, 1500);
+                    }
+                };
+                speechSynthesis.speak(u);
+            }
+        };
+        catVoiceAudio.play().catch(()=>{
+            if(catVoiceAudio){
+                catVoiceAudio = null;
+            }
+            if('speechSynthesis' in window){
+                const u = new SpeechSynthesisUtterance(msg);
+                u.lang='ko-KR';
+                u.rate = 1.15;
+                u.pitch = 2.0;
+                u.volume = 1.0;
+
+                const voices = speechSynthesis.getVoices();
+                const koVoice = voices.find(v => v.lang.startsWith('ko') && /female|여|child|아이/i.test(v.name))
+                              || voices.find(v => v.lang.startsWith('ko'));
+                if(koVoice) u.voice = koVoice;
+
+                u.onend = ()=>{
+                    if(bgm && bgmPlaying) bgm.volume = 0.13;
+                    if(gen !== catGeneration) return;
+                    if(autoHideAfterSpeech){
+                        hideWrap();
+                    } else {
+                        catHideTimer = setTimeout(hideWrap, 1500);
+                    }
+                };
+                speechSynthesis.speak(u);
+            }
+        });
+    } else if('speechSynthesis' in window){
+        const u = new SpeechSynthesisUtterance(msg);
+        u.lang='ko-KR';
+        u.rate = 1.15;    /* slightly fast - cute child cadence */
+        u.pitch = 2.0;    /* maximum pitch for highest child-like voice */
+        u.volume = 1.0;   /* max volume */
+
+        /* Prefer female/child Korean voice */
+        const voices = speechSynthesis.getVoices();
+        const koVoice = voices.find(v => v.lang.startsWith('ko') && /female|여|child|아이/i.test(v.name))
+                      || voices.find(v => v.lang.startsWith('ko'));
+        if(koVoice) u.voice = koVoice;
+
+        u.onend = ()=>{
+            if(bgm && bgmPlaying) bgm.volume = 0.13;
+            if(gen !== catGeneration) return;
+            if(autoHideAfterSpeech){
+                hideWrap();
+            } else {
+                catHideTimer = setTimeout(hideWrap, 1500);
+            }
+        };
+        speechSynthesis.speak(u);
+    }
+
+    /* Fallback if speech/audio never fires onend */
+    catHideTimer = setTimeout(()=>{
+        if(gen === catGeneration && w.style.display !== 'none') hideWrap();
+    }, 15000);
+}
+
+/* ============================================================
+   POLE CHECK
+   ============================================================ */
+function startPoleCheck(){
+    checking=true; bmActive=true;
+    const cpb = document.getElementById('checkPoleBtn');
+    cpb.classList.add('no-pulse');
+    cpb.style.display = 'none';
+    document.getElementById('catWrap').style.display = 'none';
+    if('speechSynthesis' in window) speechSynthesis.cancel();
+
+    showCat('막대자석을 고리 자석의 윗면에 가까이 하세요.', 'center', true, null, './cat_voice_2.mp3');
+
+    const bm = document.getElementById('barMagnetEl');
+    bm.innerHTML = BAR_SVG; bm.style.display = 'block';
+
+    /* Position bar magnet in upper-left area (matching screenshot) */
+    requestAnimationFrame(()=>{
+        resetBarMagnetPosition();
+        updateBarMagnetScale();
+    });
+
+    const startBarMagnetDrag = e=>{
+        if(quizUp) return;
+        /* If a second finger is down (pinch), let the browser handle zoom — don't drag. */
+        if(e.touches && e.touches.length > 1) return;
+        const pt = e.touches ? e.touches[0] : e;
+        dragBM=true; bmOX=pt.clientX-bm.offsetLeft; bmOY=pt.clientY-bm.offsetTop;
+        bm.style.cursor='grabbing';
+        e.preventDefault();
+    };
+    bm.onpointerdown = startBarMagnetDrag;
+    bm.ontouchstart = startBarMagnetDrag;
+    bm.onmousedown = startBarMagnetDrag;
+}
+
+/* ============================================================
+   BAR MAGNET DETECTION
+   ============================================================ */
+function checkBMAboveRing(){
+    if(!bmActive || !dragBM || quizUp || attachRing) return;
+    const bm = document.getElementById('barMagnetEl');
+    const br = bm.getBoundingClientRect();
+    const bmCX = br.left + br.width / 2;
+    const bmBY = br.bottom;
+
+    const rect = ren.domElement.getBoundingClientRect();
+
+    let hitG = null;
+    let minDist = Infinity;
+    let hitRSY = 0;
+    for(const g of rings){
+        if(g.userData.identified) continue;
+        const topPoint = new THREE.Vector3(g.position.x, g.position.y + RH / 2, g.position.z).project(cam);
+        const rsx = (topPoint.x * 0.5 + 0.5) * rect.width + rect.left;
+        const rsy = (-topPoint.y * 0.5 + 0.5) * rect.height + rect.top;
+
+        const dx = Math.abs(bmCX - rsx);
+        if(dx > 26) continue;
+
+        const dy = rsy - bmBY;
+        if(dy < -6 || dy > 24) continue;
+
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        if(dist < minDist){ minDist = dist; hitG = g; hitRSY = rsy; }
+    }
+    if(!hitG) return;
+
+    const same = ('N' === hitG.userData.topPole);
+    dragBM = false; bm.style.cursor = 'grab';
+
+    if(same){
+        playRepelSound();
+        const ct = parseInt(bm.style.top) || 100;
+        bm.style.transition = 'top 0.35s ease-out';
+        bm.style.top = (ct - 70) + 'px';
+        setTimeout(()=>{ bm.style.transition=''; }, 350);
+        setTimeout(()=> showQuiz(hitG), 400);
+    } else {
+        playAttractSound();
+        attachRing = hitG; attachOrigY = hitG.position.y;
+
+        /* Goal: ring's S-pole top face touches bar magnet's N-pole tip exactly.
+           Strategy: use an invisible 1×1 marker rect placed inside the SVG at the exact
+           visible N-pole tip (viewBox y=216.5, the center of the bottom stroke). Its
+           getBoundingClientRect() gives the tip's true screen position with ALL
+           transforms — SVG preserveAspectRatio letterboxing, the bar magnet's CSS
+           transform: scale(), and the appStage scale — already baked in. No math
+           required, so no rounding error. We then unproject that screen point onto
+           the ring's z-plane to get the exact world coordinates. */
+        const tipEl = document.getElementById('bmTipMarker');
+        const tipRect = tipEl.getBoundingClientRect();
+        const tipScreenX = tipRect.left + tipRect.width / 2;
+        const tipScreenY = tipRect.top + tipRect.height / 2;
+
+        /* Convert tip screen coords to NDC, then unproject onto ring's z-plane.
+           We use a ray from the camera through the tip and intersect it with the
+           plane z = hitG.position.z (rings live on that plane). */
+        const ndcX = ((tipScreenX - rect.left) / rect.width) * 2 - 1;
+        const ndcY = -((tipScreenY - rect.top) / rect.height) * 2 + 1;
+        const tipRay = new THREE.Vector3(ndcX, ndcY, 0.5).unproject(cam).sub(cam.position).normalize();
+        const ringZ = hitG.position.z;
+        const tParam = (ringZ - cam.position.z) / tipRay.z;
+        const tipWorld = cam.position.clone().add(tipRay.multiplyScalar(tParam));
+
+        /* Ring CENTER target = tip world position with Y shifted down by RH/2
+           (so the ring's TOP face — at center.y + RH/2 — meets the tip exactly) */
+        const targetX = tipWorld.x;
+        const targetY = tipWorld.y - RH / 2;
+
+        /* Smooth animation: ring slides to bar magnet over 250ms (X and Y together) */
+        const startX = hitG.position.x;
+        const startY = hitG.position.y;
+        const animStart = performance.now();
+        const animDur = 250;
+        const attractAnim = {
+            ring: hitG,
+            update: (now) => {
+                const t = Math.min(1, (now - animStart) / animDur);
+                /* Ease-out: fast start, slow end (like magnetic pull) */
+                const ease = 1 - (1 - t) * (1 - t);
+                hitG.position.x = startX + (targetX - startX) * ease;
+                hitG.position.y = startY + (targetY - startY) * ease;
+                if(t >= 1){
+                    hitG.position.x = targetX;
+                    hitG.position.y = targetY;
+                    return true;
+                }
+                return false;
+            }
+        };
+        physicsAnims.push(attractAnim);
+        setTimeout(()=> showQuiz(hitG), 350);
+    }
+}
+
+/* ============================================================
+   QUIZ (feedback messages below buttons)
+   ============================================================ */
+function showQuiz(ring){
+    quizUp = true;
+    const ov = document.createElement('div'); ov.className = 'popup-overlay';
+    ov.innerHTML = `<div class="popup-box">
+        <button class="x-btn" data-action="close">&times;</button>
+        <h3>고리 자석의 윗면은 어떤 극입니까?</h3>
+        <button class="choice-btn n-pole" data-pole="N">N극</button>
+        <button class="choice-btn s-pole" data-pole="S">S극</button>
+        <div class="quiz-feedback" id="quizFeedback"></div>
+    </div>`;
+    document.getElementById('experimentScreen').appendChild(ov);
+    const correct = ring.userData.topPole;
+    const feedbackEl = ov.querySelector('#quizFeedback');
+
+    ov.querySelector('[data-action="close"]').onclick = ()=>{
+        ov.remove(); quizUp=false;
+        /* Restore ring to its original position */
+        if(attachRing){
+            attachRing.position.copy(attachRing.userData.originalPos);
+            attachRing=null;
+        }
+        /* Move bar magnet back to center so it doesn't re-trigger on same ring */
+        const bm = document.getElementById('barMagnetEl');
+        resetBarMagnetPosition();
+        bm.style.cursor = 'grab';
+        dragBM = false;
+    };
+    ov.querySelectorAll('.choice-btn').forEach(b=>{
+        b.onclick = ()=>{
+            if(b.dataset.pole === correct){
+                feedbackEl.textContent = '정답이에요! 👏';
+                feedbackEl.className = 'quiz-feedback correct';
+                playCorrectSound();
+                ring.userData.identified = true; refLabel(ring); idCount++;
+                setTimeout(()=>{
+                    ov.remove(); quizUp = false;
+                    if(attachRing){ attachRing.position.copy(attachRing.userData.originalPos); attachRing=null; }
+                    else ring.position.copy(ring.userData.originalPos);
+                    if(idCount >= 6) finishCheck();
+                }, 800);
+            } else {
+                feedbackEl.textContent = '다시 생각해 보세요.';
+                feedbackEl.className = 'quiz-feedback wrong';
+                playWrongSound();
+            }
+        };
+    });
+}
+
+/* ============================================================
+   MOUSE EVENTS
+   ============================================================ */
+
+let dragDepth = 10;
+
+function getClientPoint(e){
+    return e.touches ? e.touches[0] : e;
+}
+
+document.addEventListener('pointermove', e=>{
+    const pt = getClientPoint(e);
+    if(dragBM){
+        const bm = document.getElementById('barMagnetEl');
+        bm.style.left = (pt.clientX-bmOX)+'px';
+        bm.style.top = (pt.clientY-bmOY)+'px';
+        checkBMAboveRing();
+        return;
+    }
+    if(dragRing && isDrag){
+        return;
+    }
+    if(isRot){
+        cTheta += (pt.clientX-pmx)*0.005;
+        const maxTheta = Math.PI/6;
+        cTheta = Math.max(-maxTheta, Math.min(maxTheta, cTheta));
+        cPhi = Math.max(0.25, Math.min(Math.PI*0.48, cPhi-(pt.clientY-pmy)*0.005));
+        updCam(); pmx=pt.clientX; pmy=pt.clientY;
+    }
+});
+
+document.addEventListener('pointerup', e=>{
+    if(dragBM){ dragBM=false; document.getElementById('barMagnetEl').style.cursor='grab'; return; }
+    if(dragRing && isDrag){
+        dropOnPoleWithPhysics(dragRing);
+        dragRing=null; isDrag=false; return;
+    }
+    isRot = false;
+});
+
+function onDown(e){
+    const pt = getClientPoint(e);
+    if(dragBM || quizUp || catLocked || !ren) return;
+    /* If a second finger is down (pinch), let the browser handle zoom — don't start a drag. */
+    if(e.touches && e.touches.length > 1) return;
+    const rect = ren.domElement.getBoundingClientRect();
+    mse.set(((pt.clientX-rect.left)/rect.width)*2-1, -((pt.clientY-rect.top)/rect.height)*2+1);
+    ray.setFromCamera(mse, cam);
+    const ch = []; rings.forEach(g=>{ if(g.children[0]) ch.push(g.children[0]); });
+    const hits = ray.intersectObjects(ch);
+    if(hits.length > 0){
+        const hg = hits[0].object.parent;
+        if(pChecked){
+            /* If ring is on pole, drag it off back to original position */
+            if(hg.userData.onPole){
+                removeRingFromPole(hg);
+                return;
+            }
+            const sx=pt.clientX, sy=pt.clientY; let moved=false;
+            const onMv = me=>{
+                const mv = getClientPoint(me);
+                if(Math.abs(mv.clientX-sx)>5 || Math.abs(mv.clientY-sy)>5){
+                    moved=true; document.removeEventListener('pointermove', onMv);
+                    isDrag=true; dragRing=hg;
+
+                    /* Immediately snap ring to pole top position */
+                    const poleTopY = BY + BT + 5.8;
+                    let snapY = poleTopY;
+                    if(onPole.length > 0){
+                        const topRing = onPole[onPole.length - 1];
+                        const minAbove = topRing.position.y + RH + G_REP;
+                        snapY = Math.max(snapY, minAbove);
+                    }
+                    hg.position.set(0, snapY, 0);
+                }
+            };
+            const onUp = ()=>{
+                document.removeEventListener('pointermove',onMv);
+                document.removeEventListener('pointerup',onUp);
+                if(!moved){
+                    /* Double-click to flip ring */
+                    const now = Date.now();
+                    const lastClick = hg.userData.lastClickTime || 0;
+                    if(now - lastClick < 400){
+                        flipRing(hg);
+                        playFlipSound();
+                        hg.userData.lastClickTime = 0;
+                    } else {
+                        hg.userData.lastClickTime = now;
+                    }
+                }
+            };
+            document.addEventListener('pointermove', onMv);
+            document.addEventListener('pointerup', onUp, {once:true});
+            return;
+        }
+    }
+    isRot=true; pmx=pt.clientX; pmy=pt.clientY;
+}
+
+function onWheel(e){
+    cDist += e.deltaY*0.008;
+    cDist = Math.max(6, Math.min(24, cDist));
+    updCam();
+}
+
+/* ============================================================
+   FINISH, FLIP, POLE, WIN
+   ============================================================ */
+function finishCheck(){
+    pChecked=true; checking=false; bmActive=false;
+    document.getElementById('barMagnetEl').style.display='none';
+    let msg, audioFile;
+    if(curM===1) { msg='고리 자석으로 가장 높은 탑을 쌓아 보세요.'; audioFile='./cat_voice_3.mp3'; }
+    else if(curM===2) { msg='고리 자석으로 가장 낮은 탑을 쌓아 보세요.'; audioFile='./cat_voice_4.mp3'; }
+    else { msg='카드와 같은 모양으로 탑을 쌓아 보세요.'; audioFile='./cat_voice_5.mp3'; }
+    /* Show info-box after cat speech finishes and disappears */
+    showCat(msg, 'left', false, ()=>{
+        showInfo('고리 자석을 두 번 클릭하면 뒤집을 수 있어요.');
+    }, audioFile);
+}
+function showInfo(t){
+    document.querySelectorAll('.info-box').forEach(b=>b.remove());
+    const bx=document.createElement('div'); bx.className='info-box';
+    bx.style.left='50%'; bx.style.top='35%'; bx.style.right='auto';
+    bx.style.transform='translate(-50%,-50%)';
+    bx.style.fontSize='28px'; bx.style.padding='44px 50px 44px 30px';
+    bx.style.textAlign='center'; bx.style.whiteSpace='nowrap';
+    bx.innerHTML='<button class="x-btn" onclick="this.parentElement.remove()">&times;</button>'+t;
+    document.getElementById('experimentScreen').appendChild(bx);
+}
+
+function flipRing(g){
+    if(!pChecked || g.userData.onPole) return;
+    const u=g.userData, t=u.topPole; u.topPole=u.bottomPole; u.bottomPole=t;
+    refLabel(g);
+}
+
+/* ============================================================
+   Remove ring from pole - click to remove back to original position
+   ============================================================ */
+function removeRingFromPole(ring){
+    const idx = onPole.indexOf(ring);
+    if(idx === -1) return;
+    // Remove this ring and all rings above it
+    const removedRings = onPole.splice(idx);
+    removedRings.forEach(r=>{
+        r.userData.onPole = false;
+        r.userData.attracts = false;
+        r.userData.vy = 0;
+        r.userData.anchored = false;
+        r.userData.settled = false;
+        r.userData.settleTargetY = undefined;
+        r.position.copy(r.userData.originalPos);
+    });
+    recomputeAttractsFlags();
+    /* Stop any running simulation. */
+    physicsAnims = physicsAnims.filter(a => a !== stackSim && a !== wobbleAnim);
+    stackSim = null;
+    wobbleAnim = null;
+    /* Smoothly resettle remaining rings into their new equilibrium.
+       placeSettledRings() treats the LAST ring as "active" and skips it, but
+       on removal we want EVERY remaining ring to reposition. Trick: append a
+       harmless sentinel that stands in as the active ring, run the placer,
+       then strip the sentinel. */
+    if(onPole.length > 0){
+        const sentinel = { userData: { topPole: 'N', bottomPole: 'N', onPole: false } };
+        onPole.push(sentinel);
+        placeSettledRings();
+        onPole.pop();
+    }
+}
+
+/* ============================================================
+   Drop from top with physics simulation
+   ============================================================ */
+function getPreviewPlacement(){
+    if(onPole.length===0){
+        return { x:0, z:0, y:BY + BT + RH/2, attracts:false };
+    }
+    const prev = onPole[onPole.length-1];
+    return {
+        x:0,
+        z:0,
+        y:prev.position.y + STACK_PREVIEW_STEP,
+        attracts:false
+    };
+}
+
+/* ============================================================
+   UNIFIED PHYSICS SIMULATOR
+   - Gravity acts on every ring stacked on the pole
+   - Every PAIR of stacked rings exerts a magnetic force on each other
+     (same poles facing => repel, opposite poles facing => attract)
+   - Pole base acts as a hard floor; rings cannot pass through each other
+   - When the system settles (all velocities small), checkWin() fires
+   ============================================================ */
+
+/* Physics constants (simplified single-active-ring model)
+   The model is intentionally simple: only one ring is "active" (in motion) at
+   a time — the most recently dropped one. Every other ring on the pole is
+   already at its analytic equilibrium position and does not move. */
+const PHYS_GRAVITY      = 26.0;    // gravity acceleration (world units / s^2)
+const PHYS_MAG_STRENGTH = 6.5;     // magnetic force coefficient (per pair) — also sets the repel equilibrium gap
+const PHYS_MAG_RANGE    = 3.5;     // beyond this gap, pair force ≈ 0
+const PHYS_DAMPING      = 0.978;   // per-frame velocity damping (air drag)
+const PHYS_DAMPING_SLOW = 0.92;    // extra-strong damping when velocity is small
+const PHYS_SLOW_THRESH  = 0.8;     // velocity below this gets stronger damping
+const PHYS_MIN_GAP      = G_ATT;   // attractive pair: minimum (touching) gap
+const PHYS_SETTLE_VEL   = 0.10;    // |vy| below this counts as "at rest"
+const PHYS_MAX_DT       = 0.02;    // clamp dt to avoid explosions on tab switch
+const PHYS_STICK_GAP    = 0.04;    // attractive: surface gap below this triggers stick & end-of-fall
+const PHYS_VEL_CAP      = 8.0;     // terminal-velocity-style cap on |vy|
+
+/* Reference to the active simulation. */
+let stackSim = null;
+/* Reference to the smooth-resettle animation (separate from stackSim).
+   When new weight is added/removed, the previously-settled rings need to
+   ease into their new equilibrium positions instead of snapping there. */
+let settleAnim = null;
+/* Reference to the brief decay-wobble animation that runs after settleAnim
+   finishes — gives a "magnets reacting" feel by sinusoidally bouncing each
+   floating ring around its target with an exponential amplitude decay. */
+let wobbleAnim = null;
+
+function dropOnPoleWithPhysics(r){
+    r.userData.onPole = true;
+    r.userData.settled = false; // brand-new ring is in motion (the "active" ring)
+    onPole.push(r);
+
+    /* Drop ALWAYS starts from the top of the pole, but slightly BELOW the
+       ceiling clamp so a tall repel oscillation doesn't immediately collide
+       with the ceiling and lose its kinetic energy. */
+    const dropStartY = BY + BT + 5.4;
+    r.position.set(0, dropStartY, 0);
+    r.userData.vy = 0;
+
+    /* Decide which sound to play based on the topmost neighbor at drop time */
+    if(onPole.length >= 2){
+        const below = onPole[onPole.length - 2];
+        const facingSame = (below.userData.topPole === r.userData.bottomPole);
+        if(facingSame) playRepelSound(); else playAttractSound();
+    } else {
+        playAttractSound();
+    }
+
+    /* Refresh the static "attracts" flags used by the win checker. */
+    recomputeAttractsFlags();
+
+    /* Snap every previously-settled ring to its analytic equilibrium position
+       under the new total stack (the freshly added ring's weight may shift
+       the lower repel gaps, so we recompute from scratch). The active ring is
+       NOT placed here — it falls from the top of the pole under simulation. */
+    placeSettledRings();
+
+    /* Start the simulation. The active ring is the one we just added. */
+    startStackSimulation();
+}
+
+/* === Analytic equilibrium calculator (smooth) ===
+   Compute the target Y position for every settled ring (everyone except the
+   active one at the top of onPole) and start a brief easing animation that
+   slides them from where they are now to where they belong. This avoids the
+   visual "jump" when a new ring is added and the gaps below need to adjust. */
+/* === [VERSION B] 합산 자기력 평형점 계산기 ===
+   여러 자석이 서로 영향을 주는 상황에서 각 자석의 진짜 평형점은
+   닫힌 공식으로 풀 수 없다(여러 1/gap²의 합 = 그 자석 위에 얹힌 무게).
+   그래서 수치적으로 푼다.
+   
+   approach: 각 자석의 위치를 변수로 놓고, "자기 위 모든 자석을 합한 자기력
+   = 자기 자신의 무게 + 자기 위에 쌓인 자석 무게 합" 조건이 충족될 때까지
+   위에서부터 차례로 z=0이 되는 gap을 이분법으로 찾는다. */
+function solveEquilibriumGap(weightAbove, magStrength, gravity){
+    /* 활성 자석 한 개 위에 weightAbove 만큼의 무게가 더 얹혔을 때
+       바로 아래 자석과 활성 자석 사이의 평형 gap을 찾는다.
+       
+       조건: pairMagneticForce(lower→upper) = (1+weightAbove) * gravity
+       즉  magStrength / (gap+eps)^2 = (1+weightAbove) * gravity
+       
+       weightAbove는 활성 위에 더 쌓인 자석 수. 활성 자체의 무게 1을 더한다. */
+    const totalWeight = (1 + weightAbove) * gravity;
+    const eps = 0.05;
+    /* magStrength / (gap+eps)^2 = totalWeight  →  gap = sqrt(magStrength/totalWeight) - eps */
+    let gap = Math.sqrt(magStrength / totalWeight) - eps;
+    if(gap < 0.05) gap = 0.05;
+    return gap;
+}
+
+/* 다중 자석 합산을 고려한 진짜 평형점 — 여러 아래 자석들이 모두 활성 자석을
+   밀어올릴 때, 각각의 1/gap² 합 = 무게 가 되는 활성의 y를 이분법으로 찾는다. */
+function solveActiveEquilibriumY(activeIdx, ringsBelow, weightAbove){
+    /* ringsBelow: [{y, samePoleAsActiveBottom}] 활성 자석보다 아래에 있는 자석들 */
+    const totalGravity = (1 + weightAbove) * PHYS_GRAVITY;
+    const eps = 0.05;
+    
+    function netUpwardForce(activeY){
+        let f = 0;
+        for(const rb of ringsBelow){
+            const gap = (activeY - rb.y) - RH;
+            if(gap < -RH * 0.4) return Infinity; // 너무 겹치면 +∞
+            const safeGap = Math.max(gap, -RH * 0.4);
+            const mag = PHYS_MAG_STRENGTH / ((Math.abs(safeGap)+eps) * (Math.abs(safeGap)+eps));
+            const taper = Math.max(0, 1 - gap / PHYS_MAG_RANGE);
+            const sign = rb.samePoleAsActiveBottom ? +1 : -1; // same → 밀어올림(+)
+            f += sign * mag * taper;
+        }
+        return f - totalGravity; // 위로 가는 알짜힘 - 무게
+    }
+    
+    /* 가장 가까운 아래 자석 위 0.05 ~ 그 위 5.0 사이에서 이분법 */
+    if(ringsBelow.length === 0) return null;
+    const topBelow = ringsBelow.reduce((a,b) => a.y > b.y ? a : b);
+    let lo = topBelow.y + RH + 0.05;
+    let hi = topBelow.y + RH + 5.0;
+    let fLo = netUpwardForce(lo);
+    let fHi = netUpwardForce(hi);
+    /* lo에서는 자석들이 위로 강하게 밀어올림 → fLo > 0
+       hi에서는 자기력이 약해서 무게에 짐 → fHi < 0 */
+    if(fLo < 0 || fHi > 0) return null; // 평형점 없음(부호 안 바뀜)
+    
+    for(let it=0; it<60; it++){
+        const mid = 0.5 * (lo + hi);
+        const fMid = netUpwardForce(mid);
+        if(Math.abs(fMid) < 1e-6) return mid;
+        if(fMid > 0) lo = mid; else hi = mid;
+    }
+    return 0.5 * (lo + hi);
+}
+
+function placeSettledRings(includeActive){
+    if(onPole.length === 0) return;
+    /* === [VERSION B FIX] ===
+       모든 자석의 합산 자기장 기반으로 진짜 평형 위치를 계산.
+       위에서부터 차례로 푸는 게 아니라, 아래에서부터 차례로 푼다.
+       각 자석의 평형 = 자기 아래 모든 자석들로부터의 합산 밀어내는 힘이
+                        자기 + 자기 위 모든 자석들의 무게와 같아지는 위치. */
+    const settledCount = includeActive ? onPole.length : onPole.length - 1;
+    if(settledCount <= 0) return;
+
+    const targets = new Array(settledCount);
+    const baseY = BY + BT + RH/2;
+    targets[0] = baseY; // 가장 아래는 항상 받침대 위
+
+    for(let i=1; i<settledCount; i++){
+        const upper = onPole[i];
+        // 이 자석보다 아래에 있는 모든 자석을 합산
+        const ringsBelow = [];
+        for(let j=0; j<i; j++){
+            const lower = onPole[j];
+            const samePoleAsUpperBottom = (lower.userData.topPole === upper.userData.bottomPole);
+            ringsBelow.push({ y: targets[j], samePoleAsActiveBottom: samePoleAsUpperBottom });
+        }
+        const weightAbove = settledCount - i - 1; // 이 자석 위에 얹힌 자석 수
+        
+        // 가장 가까운 아래 자석과 같은 극인지로 끌어당김/밀어냄 분기
+        const nearest = onPole[i-1];
+        const samePoles = (nearest.userData.topPole === upper.userData.bottomPole);
+        
+        if(!samePoles){
+            // 끌어당김 → 붙어버림
+            targets[i] = targets[i-1] + RH + PHYS_MIN_GAP;
+        } else {
+            // 밀어냄 → 합산 평형점을 수치로 찾기
+            const eqY = solveActiveEquilibriumY(i, ringsBelow, weightAbove);
+            if(eqY !== null){
+                targets[i] = eqY;
+            } else {
+                // 폴백: 단일 쌍 공식 (가장 가까운 아래 자석만 고려)
+                const gap = solveEquilibriumGap(weightAbove, PHYS_MAG_STRENGTH, PHYS_GRAVITY);
+                targets[i] = targets[i-1] + RH + gap;
+            }
+        }
+    }
+
+    /* === [VERSION B FIX 2] 이미 정착한 자석들은 가능한 한 그 자리를 유지 ===
+       위에 자석이 더 쌓일 때 아래 자석들을 합산 평형점으로 새로 계산하면
+       그 결과가 시뮬레이션이 정착한 위치와 약간 다를 수 있다. 그 차이가
+       물리적으로 자연스러운 방향(아래로)이라면 허용하지만, 위로 올라가는
+       건 물리적으로 잘못된 결과이므로 막는다.
+       
+       이미 settleTargetY가 있는 자석은 새 계산값과 기존값 중 "더 아래쪽"을
+       선택한다. 이렇게 하면 위로 올라가는 일이 절대 일어나지 않는다. */
+    for(let i=1; i<settledCount; i++){
+        const r = onPole[i];
+        if(typeof r.userData.settleTargetY === 'number'){
+            // 새 계산값이 기존값보다 위라면 → 기존값 유지 (위로 안 올라감)
+            // 새 계산값이 기존값보다 아래라면 → 새 값 사용 (자연스러운 눌림)
+            if(targets[i] > r.userData.settleTargetY){
+                targets[i] = r.userData.settleTargetY;
+            }
+        }
+    }
+
+    /* Snapshot starting Y positions and start the smooth animation. */
+    const settledRings = onPole.slice(0, settledCount);
+    const startY = settledRings.map(r => r.position.y);
+
+    /* Cancel any running settle/wobble animation. */
+    physicsAnims = physicsAnims.filter(a => a !== settleAnim && a !== wobbleAnim);
+    wobbleAnim = null;
+
+    const duration = 0.4;
+    const startTime = performance.now();
+
+    settleAnim = {
+        ring: null,
+        update: (now) => {
+            const t = Math.min(1, (now - startTime) / 1000 / duration);
+            const e = t < 0.5
+                ? 4 * t * t * t
+                : 1 - Math.pow(-2 * t + 2, 3) / 2;
+            for(let i=0; i<settledRings.length; i++){
+                const r = settledRings[i];
+                if(!r.userData.onPole) continue;
+                r.userData.settleTargetY = targets[i];
+                r.position.y = startY[i] + (targets[i] - startY[i]) * e;
+            }
+            if(t >= 1){
+                for(let i=0; i<settledRings.length; i++){
+                    const r = settledRings[i];
+                    if(!r.userData.onPole) continue;
+                    r.position.y = targets[i];
+                    r.userData.settleTargetY = targets[i];
+                }
+                settleAnim = null;
+                if(!stackSim) startDecayWobble();
+                return true;
+            }
+            return false;
+        }
+    };
+    physicsAnims.push(settleAnim);
+}
+
+/* === Decay wobble ===
+   After every ring has reached its analytic equilibrium (settleAnim done),
+   run a short sine wobble whose amplitude exponentially decays to zero.
+   The wobble is applied to every non-anchored ring (i.e. every ring NOT
+   chained back to the base by attractive bonds — anchored rings stay still
+   because they're held firm by the base).
+   - Math: y(t) = settleTargetY + A · sin(ω·t) · exp(-t/τ)
+   - At t=0, sin(0) = 0 → no jump from settleTargetY
+   - As t grows, exp(-t/τ) shrinks → amplitude fades to zero
+   - At end, y is exactly settleTargetY again, no residual offset
+
+   ATTRACTIVE bonds: rings glued together must wobble TOGETHER — they share
+   one common phase/amplitude so they look like one rigid body. We compute
+   that phase using the lowest non-anchored ring of each connected group.
+   This ensures attractive pairs never visually separate during the wobble. */
+const WOBBLE_AMP    = 0.03;   // peak displacement (world units)
+const WOBBLE_HZ     = 1.5;    // oscillation frequency
+const WOBBLE_TAU    = 0.6;    // amplitude decay time-constant (1/e per τ seconds)
+const WOBBLE_TOTAL  = 2.2;    // total duration before snapping to rest
+
+function startDecayWobble(){
+    /* Cancel any prior wobble animation. */
+    physicsAnims = physicsAnims.filter(a => a !== wobbleAnim);
+    if(onPole.length === 0){ wobbleAnim = null; return; }
+
+    /* Identify anchored chain (attractive-bond chain back to base).
+       Anchored rings DO NOT wobble. */
+    const anchored = new Array(onPole.length).fill(false);
+    anchored[0] = true;
+    for(let i=1; i<onPole.length; i++){
+        const below = onPole[i-1];
+        const here  = onPole[i];
+        const attractive = (below.userData.topPole !== here.userData.bottomPole);
+        anchored[i] = anchored[i-1] && attractive;
+    }
+
+    /* Group rings into "wobble groups": each group is a maximal run of
+       consecutive non-anchored rings whose adjacent pairs are attractive
+       (i.e. they're bonded). A repel pair starts a new group because the
+       two rings are physically separated and free to wobble independently.
+
+       Examples (A=attract, R=repel pair below):
+         anchor anchor R . A . A    →  groups: [2,3,4] (one group of 3)
+         anchor R . R . R .         →  groups: [1], [2], [3]
+         anchor R . A . R .         →  groups: [1,2], [3]
+       Each group gets its own sine: same phase across all members so
+       attractive bonds stay glued. */
+    const groups = [];
+    let cur = null;
+    for(let i=0; i<onPole.length; i++){
+        if(anchored[i]){
+            if(cur){ groups.push(cur); cur = null; }
+            continue;
+        }
+        const startNewGroup = !cur ||
+            /* The pair (cur.last, i) is attractive iff topPole(cur.last) != bottomPole(i). */
+            (onPole[i-1].userData.topPole === onPole[i].userData.bottomPole);
+            /* same poles = repel = new group */
+        if(startNewGroup){
+            if(cur) groups.push(cur);
+            cur = [i];
+        } else {
+            cur.push(i);
+        }
+    }
+    if(cur) groups.push(cur);
+
+    if(groups.length === 0){ wobbleAnim = null; return; }
+
+    /* All groups start at phase=0 so sin(0)=0 → no jump from settleTargetY.
+       (Earlier per-group phases caused the wobble to start at sin(phase)≠0,
+       which displaced the ring from its target on the very first frame.) */
+    const groupPhases = groups.map(g => 0);
+
+    /* DEBUG: log each ring's settleTargetY at wobble start to verify they
+       are correctly positioned at their analytic equilibrium. */
+    let dbg = '[D] wobble start, groups='+JSON.stringify(groups)+' targets:';
+    for(let i=0; i<onPole.length; i++){
+        const r = onPole[i];
+        const t = r.userData.settleTargetY;
+        dbg += ' r#'+r.userData.index+'(y='+r.position.y.toFixed(3)+',target='+(t===undefined?'?':t.toFixed(3))+',anc='+(anchored[i]?1:0)+')';
+    }
+    console.log(dbg);
+
+    const startTime = performance.now();
+    let lastLogTime = 0;
+
+    wobbleAnim = {
+        ring: null,
+        update: (now) => {
+            const elapsed = (now - startTime) / 1000;
+            if(elapsed >= WOBBLE_TOTAL){
+                /* Snap to exact targets and end. */
+                let dbgEnd = '[D] wobble end:';
+                for(let i=0; i<onPole.length; i++){
+                    const r = onPole[i];
+                    if(typeof r.userData.settleTargetY === 'number'){
+                        r.position.y = r.userData.settleTargetY;
+                        dbgEnd += ' r#'+r.userData.index+'='+r.userData.settleTargetY.toFixed(3);
+                    }
+                }
+                console.log(dbgEnd);
+                wobbleAnim = null;
+                return true;
+            }
+            /* Log every 0.5s during wobble. */
+            if(elapsed - lastLogTime > 0.5){
+                lastLogTime = elapsed;
+                let mid = '[D] wobble t='+elapsed.toFixed(2)+':';
+                for(let i=0; i<onPole.length; i++){
+                    const r = onPole[i];
+                    const t = r.userData.settleTargetY;
+                    mid += ' r#'+r.userData.index+'(y='+r.position.y.toFixed(3)+',t='+(t===undefined?'?':t.toFixed(3))+')';
+                }
+                console.log(mid);
+            }
+            /* For each group, compute one shared offset and apply to all
+               members so attractive pairs move together. */
+            const decay = Math.exp(-elapsed / WOBBLE_TAU);
+            for(let gi=0; gi<groups.length; gi++){
+                const phase = groupPhases[gi];
+                const dy = WOBBLE_AMP * Math.sin(2 * Math.PI * WOBBLE_HZ * elapsed + phase) * decay;
+                for(const idx of groups[gi]){
+                    const r = onPole[idx];
+                    if(typeof r.userData.settleTargetY !== 'number') continue;
+                    r.position.y = r.userData.settleTargetY + dy;
+                }
+            }
+            return false;
+        }
+    };
+    physicsAnims.push(wobbleAnim);
+}
+
+
+
+/* attracts[i] = true iff ring i's bottom pole is opposite to ring (i-1)'s top pole.
+   This is the static "are these neighbors stuck together" flag used by checkWin. */
+function recomputeAttractsFlags(){
+    for(let i=0; i<onPole.length; i++){
+        if(i === 0){ onPole[i].userData.attracts = false; continue; }
+        const prev = onPole[i-1];
+        const cur  = onPole[i];
+        cur.userData.attracts = (prev.userData.topPole !== cur.userData.bottomPole);
+    }
+}
+
+/* Pairwise magnetic force between two stacked rings.
+   Returns the vertical force the UPPER ring receives from the LOWER ring.
+   Positive => pushes upper ring UP (repulsion).
+   Negative => pulls upper ring DOWN (attraction).
+   The lower ring receives the equal-and-opposite force (Newton's 3rd law). */
+function pairMagneticForce(lower, upper){
+    /* Center-to-center distance along Y. Subtract ring height once so the
+       "gap" is the surface-to-surface separation. */
+    const gap = (upper.position.y - lower.position.y) - RH;
+    if(gap >= PHYS_MAG_RANGE) return 0;
+
+    /* The relevant poles are the ones that face each other:
+       lower's TOP pole and upper's BOTTOM pole. */
+    const same = (lower.userData.topPole === upper.userData.bottomPole);
+
+    /* Force magnitude follows ~1/(gap+eps)^2 (inverse-square-like falloff,
+       softened to avoid singularities). */
+    const eps = 0.05;
+    const safeGap = Math.max(gap, -RH * 0.4); // don't blow up if briefly overlapping
+    const mag = PHYS_MAG_STRENGTH / ((Math.abs(safeGap) + eps) * (Math.abs(safeGap) + eps));
+
+    /* Smooth taper near the cutoff so force doesn't snap to zero. */
+    const taper = Math.max(0, 1 - gap / PHYS_MAG_RANGE);
+
+    /* Sign: same poles facing => repel (push upper up, +)
+            opposite poles    => attract (pull upper down, -) */
+    const sign = same ? +1 : -1;
+
+    return sign * mag * taper;
+}
+
+/* Top of the pole — active ring starts dropping from slightly below this. */
+const POLE_TOP_Y = BY + BT + 5.8;
+
+/* Start the simulator for the active (most recently added) ring.
+   SIMPLE MODEL:
+   - Only the active (newest) ring is animated. All other rings are held at
+     their analytic equilibrium positions by placeSettledRings()'s settleAnim
+     and stay completely still.
+   - The active ring feels gravity + magnetic forces from every other ring.
+     It oscillates a few times in a repel landing, snaps stuck in an attract
+     landing, and never escapes the pole.
+   - When the active ring settles, placeSettledRings() runs once more to
+     compute the final equilibrium for ALL rings (now including the new one)
+     and slides everyone smoothly into place. Then the simulation ends. */
+function startStackSimulation(){
+    physicsAnims = physicsAnims.filter(a => a !== stackSim);
+    if(onPole.length === 0){ stackSim = null; return; }
+
+    const active   = onPole[onPole.length - 1];
+    const belowIdx = onPole.length - 2;
+    const below    = belowIdx >= 0 ? onPole[belowIdx] : null;
+
+    let lastTime = performance.now();
+    let simElapsed = 0;
+    let restFrames = 0;
+
+    /* === [VERSION B] Determine landing kind & target Y. ===
+       targetY는 활성 자석이 진동하다가 결국 멎을 평형 위치다.
+       원래 코드는 "바로 아래 자석 한 개와의 1대1 평형"으로 targetY를 계산했는데,
+       그건 시뮬레이션 중 활성 자석이 실제로 받는 합산 자기력의 평형점과 어긋났다.
+       그래서 진동이 멎고 placeSettledRings(true)로 재배치되면 점프가 발생.
+       
+       VERSION B 해결: targetY를 모든 아래 자석들의 합산 자기력장 평형점으로 계산.
+       그러면 시뮬레이션의 진동 중심점과 최종 정착 위치가 일치한다. */
+    let attractsBelow, targetY;
+    if(below === null){
+        attractsBelow = true;
+        targetY = BY + BT + RH/2;
+    } else {
+        attractsBelow = (below.userData.topPole !== active.userData.bottomPole);
+        if(attractsBelow){
+            const belowFinalY = (typeof below.userData.settleTargetY === 'number'
+                ? below.userData.settleTargetY
+                : below.position.y);
+            targetY = belowFinalY + RH + PHYS_MIN_GAP;
+        } else {
+            // 합산 평형점 — 활성 자석 아래 모든 자석의 자기력 합 = 활성 무게(1)
+            const ringsBelow = [];
+            for(let j=0; j<onPole.length-1; j++){
+                const lower = onPole[j];
+                const samePoleAsActiveBottom = (lower.userData.topPole === active.userData.bottomPole);
+                const yj = (typeof lower.userData.settleTargetY === 'number'
+                    ? lower.userData.settleTargetY
+                    : lower.position.y);
+                ringsBelow.push({ y: yj, samePoleAsActiveBottom });
+            }
+            const eqY = solveActiveEquilibriumY(onPole.length-1, ringsBelow, 0);
+            if(eqY !== null){
+                targetY = eqY;
+            } else {
+                // 폴백: 단일 쌍 공식
+                const eps = 0.05;
+                let targetGap = Math.sqrt(PHYS_MAG_STRENGTH / PHYS_GRAVITY) - eps;
+                if(targetGap < 0.05) targetGap = 0.05;
+                const belowFinalY = (typeof below.userData.settleTargetY === 'number'
+                    ? below.userData.settleTargetY
+                    : below.position.y);
+                targetY = belowFinalY + RH + targetGap;
+            }
+        }
+    }
+
+    stackSim = {
+        ring: active,
+        update: (now) => {
+            if(!active.userData.onPole){ stackSim = null; return true; }
+            let dt = (now - lastTime) / 1000;
+            lastTime = now;
+            if(dt > PHYS_MAX_DT) dt = PHYS_MAX_DT;
+            if(dt <= 0) return false;
+            simElapsed += dt;
+
+            /* === Force on active ring: gravity + magnetic pull from each
+                  settled ring (using their FINAL target positions, not their
+                  current settle-anim positions, so the magnetic field the
+                  active ring feels matches its own targetY). === */
+            let force = -PHYS_GRAVITY;
+            for(let i=0; i<onPole.length; i++){
+                const other = onPole[i];
+                if(other === active) continue;
+                /* Use the other ring's final target Y (where it'll be when
+                   settled) so the force field is stable. */
+                const otherY = (typeof other.userData.settleTargetY === 'number'
+                    ? other.userData.settleTargetY
+                    : other.position.y);
+                const lowerY = Math.min(active.position.y, otherY);
+                const upperY = Math.max(active.position.y, otherY);
+                /* Construct a virtual lower/upper for pairMagneticForce. */
+                const lower = active.position.y < otherY ? active : { position:{y:otherY}, userData: other.userData };
+                const upper = active.position.y < otherY ? { position:{y:otherY}, userData: other.userData } : active;
+                const fOnUpper = pairMagneticForce(lower, upper);
+                if(active === upper) force += fOnUpper;
+                else                 force += -fOnUpper;
+            }
+
+            /* Integrate (semi-implicit Euler). */
+            active.userData.vy = (active.userData.vy || 0) + force * dt;
+            /* Velocity cap. */
+            if(active.userData.vy >  PHYS_VEL_CAP) active.userData.vy =  PHYS_VEL_CAP;
+            if(active.userData.vy < -PHYS_VEL_CAP) active.userData.vy = -PHYS_VEL_CAP;
+            /* Velocity-dependent damping. */
+            const speed = Math.abs(active.userData.vy);
+            if(speed < PHYS_SLOW_THRESH){
+                const t = speed / PHYS_SLOW_THRESH;
+                const damp = PHYS_DAMPING_SLOW + (PHYS_DAMPING - PHYS_DAMPING_SLOW) * t;
+                active.userData.vy *= damp;
+            } else {
+                active.userData.vy *= PHYS_DAMPING;
+            }
+            active.position.y += active.userData.vy * dt;
+
+            /* Hard floor (first ring lands on the base). */
+            if(below === null){
+                const floorY = BY + BT + RH/2;
+                if(active.position.y <= floorY){
+                    active.position.y = floorY;
+                    active.userData.vy = 0;
+                    active.userData.settleTargetY = floorY;
+                    if(onPole.length === 6) setTimeout(checkWin, 400);
+                    stackSim = null;
+                    placeSettledRings(true);
+                    return true;
+                }
+                return false;
+            }
+
+            /* Pairwise constraint with below (using its CURRENT position so
+               active visually touches below exactly, even if below is mid-
+               settleAnim). The chain's final equilibrium is enforced by
+               placeSettledRings() after stackSim ends. */
+            const surfaceGap = (active.position.y - below.position.y) - RH;
+
+            if(attractsBelow){
+                /* Attract: snap when close enough — touch exactly. */
+                if(surfaceGap < PHYS_STICK_GAP){
+                    /* Visually snap active to below's CURRENT y so they touch
+                       on screen immediately. */
+                    active.position.y = below.position.y + RH + PHYS_MIN_GAP;
+                    active.userData.vy = 0;
+                    /* But set settleTargetY based on below's FINAL target
+                       (its settleTargetY), not its current animating position.
+                       This guarantees the deterministic final equilibrium. */
+                    const belowTargetY = (typeof below.userData.settleTargetY === 'number')
+                        ? below.userData.settleTargetY
+                        : below.position.y;
+                    active.userData.settleTargetY = belowTargetY + RH + PHYS_MIN_GAP;
+                    if(onPole.length === 6) setTimeout(checkWin, 400);
+                    stackSim = null;
+                    placeSettledRings(true);
+                    return true;
+                }
+            } else {
+                /* Repel: never overlap. Small safety gap. */
+                if(surfaceGap < 0.02){
+                    active.position.y = below.position.y + RH + 0.02;
+                    if(active.userData.vy < 0) active.userData.vy = -active.userData.vy * 0.3;
+                }
+            }
+
+            /* Ceiling clamp (active only — settled rings are held by settleAnim). */
+            const ceilY = POLE_TOP_Y - RH/2 - 0.05;
+            if(active.position.y > ceilY){
+                active.position.y = ceilY;
+                if(active.userData.vy > -2.0) active.userData.vy = -2.0;
+            }
+
+            /* === [VERSION B FIX] Rest detection (repel case). ===
+               사용자 요구: "진동의 평균값(중간값)에 정지해야 한다. 위로 올라가면 안 된다."
+               
+               감쇠 진동의 자연스러운 결과 = 진동의 평균값에 정착이다.
+               진동 중심점은 시뮬레이션이 자기력+중력으로 자연스럽게 결정한다.
+               코드는 그 결과를 인위적으로 targetY로 스냅하지 말고 그대로 둬야 한다.
+               
+               중요: 진동 중심점에 가까운지(distToTarget) 검사하지 않는다.
+               그저 속도가 충분히 작아진 프레임이 일정 횟수 이상 누적되면 정지로 본다. */
+            if(!attractsBelow){
+                if(speed < PHYS_SETTLE_VEL){
+                    restFrames++;
+                    if(restFrames > 8){
+                        // 활성 자석은 그 자리에 그대로 멈춘다 — 점프 없음
+                        active.userData.vy = 0;
+                        active.userData.settleTargetY = active.position.y;
+                        if(onPole.length === 6) setTimeout(checkWin, 400);
+                        stackSim = null;
+                        // placeSettledRings(true) 호출하지 않음 → 위로 점프 없음
+                        return true;
+                    }
+                } else {
+                    restFrames = 0;
+                }
+            }
+
+            /* Hard timeout — 진동이 5초 안에 안 멎으면 그 시점의 현재 위치에서 정지. */
+            if(simElapsed > 5.0){
+                active.userData.vy = 0;
+                active.userData.settleTargetY = active.position.y;
+                if(onPole.length === 6) setTimeout(checkWin, 400);
+                stackSim = null;
+                return true;
+            }
+
+            return false;
+        }
+    };
+    physicsAnims.push(stackSim);
+}
+
+function reStack(){
+    let y = BY + BT + RH/2;
+    for(let i=0; i<onPole.length; i++){
+        const r=onPole[i];
+        if(i>0){
+            const pv=onPole[i-1];
+            if(pv.userData.topPole !== r.userData.bottomPole){
+                y += RH + G_ATT; r.userData.attracts=true;
+            } else {
+                y += RH + G_REP; r.userData.attracts=false;
+            }
+        }
+        r.position.set(0, y, 0);
+    }
+}
+
+function checkWin(){
+    let ok;
+    if(curM===1){ ok=true; for(let i=1;i<onPole.length;i++) if(onPole[i].userData.attracts){ok=false;break;} }
+    else if(curM===2){ ok=true; for(let i=1;i<onPole.length;i++) if(!onPole[i].userData.attracts){ok=false;break;} }
+    else { const ex=[false,true,false,false,true]; ok=true; for(let i=1;i<onPole.length;i++) if(onPole[i].userData.attracts!==ex[i-1]){ok=false;break;} }
+    ok ? showOK() : showRetry();
+}
+
+function showOK(){
+    playSuccessSound();
+    const o=document.createElement('div'); o.className='popup-overlay';
+    o.innerHTML='<div class="popup-box"><button class="x-btn" onclick="this.parentElement.parentElement.remove()">&times;</button><h3>🎉 성공이에요! 🎉</h3><button class="home-btn" onclick="showSummary()" style="background:#FF9800;margin-right:10px;">정리하기</button><button class="home-btn" onclick="goHome()">처음으로</button></div>';
+    document.getElementById('experimentScreen').appendChild(o);
+}
+function showSummary(){
+    document.querySelectorAll('.popup-overlay').forEach(p=>p.remove());
+    const o=document.createElement('div'); o.className='popup-overlay';
+    o.innerHTML='<div class="popup-box" style="max-width:520px;padding:36px 42px;"><button class="x-btn" data-action="closeSummary">&times;</button><h3 style="margin-bottom:22px;">📖 정리하기</h3><p style="font-size:22px;color:#333;line-height:1.7;text-align:left;">자석의 같은 극끼리는 서로 <span style="color:#E53935;font-weight:bold;">미는 힘</span>이 작용합니다.<br>자석의 다른 극끼리는 서로 <span style="color:#1565C0;font-weight:bold;">당기는 힘</span>이 작용합니다.</p></div>';
+    document.getElementById('experimentScreen').appendChild(o);
+    o.querySelector('[data-action="closeSummary"]').onclick = ()=>{ o.remove(); showOK(); };
+}
+function showRetry(){
+    playRetrySound();
+    const o=document.createElement('div'); o.className='popup-overlay';
+    o.innerHTML='<div class="popup-box"><button class="x-btn">&times;</button><h3>다시 해 보세요.</h3></div>';
+    document.getElementById('experimentScreen').appendChild(o);
+    o.querySelector('.x-btn').onclick=()=>{ o.remove(); resetTbl(); };
+}
+function resetTbl(){
+    physicsAnims = [];
+    stackSim = null;
+    settleAnim = null;
+    wobbleAnim = null;
+    onPole.forEach(r=>{ r.userData.onPole=false; r.userData.attracts=false; r.userData.vy=0; r.userData.anchored=false; r.userData.settled=false; r.userData.settleCount=0; r.userData.settleTargetY=undefined; r.position.copy(r.userData.originalPos); });
+    onPole=[];
+}
+
+/* ============================================================
+   NAV
+   ============================================================ */
+function goBack(){
+    /* Cancel everything cleanly */
+    document.querySelectorAll('.popup-overlay,.info-box').forEach(p=>p.remove());
+    cancelCat();
+    document.getElementById('barMagnetEl').style.display='none';
+    document.getElementById('checkPoleBtn').style.display='none';
+    quizUp=false; attachRing=null; physicsAnims=[]; stackSim=null; settleAnim=null; wobbleAnim=null;
+    bmActive=false; checking=false; dragBM=false;
+
+    if(pChecked){ resetTbl(); return; }
+
+    /* Full reset then show cat → button */
+    setup(curM);
+    showCat('고리 자석의 극을 확인해 보세요.','left', false, ()=>{
+        document.getElementById('checkPoleBtn').style.display='block';
+        document.getElementById('checkPoleBtn').classList.remove('no-pulse');
+    }, './cat_voice_1.mp3');
+}
+function goHome(){
+    document.querySelectorAll('.popup-overlay,.info-box').forEach(p=>p.remove());
+    document.getElementById('catWrap').style.display='none';
+    document.getElementById('barMagnetEl').style.display='none';
+    document.getElementById('missionCardWrap').style.display='none';
+    if('speechSynthesis' in window) speechSynthesis.cancel();
+    quizUp=false; attachRing=null; physicsAnims=[]; stackSim=null; settleAnim=null; wobbleAnim=null;
+    if(animId){ cancelAnimationFrame(animId); animId=null; }
+    document.getElementById('experimentScreen').style.display='none';
+    document.getElementById('mainScreen').style.display='flex';
+}
+
+/* ============================================================
+   ANIMATION
+   ============================================================ */
+function anim(){
+    animId = requestAnimationFrame(anim);
+    if(!ren) return;
+
+    const now = performance.now();
+
+    // Update physics animations
+    physicsAnims = physicsAnims.filter(a => !a.update(now));
+
+    // Labels and pole visualization: always visible when identified
+    const labelR = (RI + RO) * 0.42;
+    const cd = new THREE.Vector3();
+    cam.getWorldDirection(cd); cd.y=0; cd.normalize();
+    rings.forEach(g=>{
+        const u = g.userData;
+        if(!u.identified) return;
+        if(u.topLabel){
+            u.topLabel.visible = true;
+            u.topLabel.position.set(0, RH/2 + 0.02, labelR);
+        }
+        /* Side sticker labels: rotate to face camera while stuck on surface */
+        const sideAngle = Math.atan2(-cd.x, -cd.z);
+        if(u.sideTopLabel){
+            u.sideTopLabel.visible = true;
+            u.sideTopLabel.rotation.y = sideAngle;
+        }
+        if(u.sideBotLabel){
+            u.sideBotLabel.visible = true;
+            u.sideBotLabel.rotation.y = sideAngle;
+        }
+        if(u.poleVis) u.poleVis.visible = true;
+    });
+
+    ren.render(scene, cam);
+}
+
+/* ============================================================
+   INIT
+   ============================================================ */
+
+/* BGM */
+let bgm = null;
+let bgmPlaying = false;
+
+function initBGM(){
+    if(bgm) return;
+    bgm = new Audio('./Notes_on_a_Sunny_Desk_Gemini.mp3');
+    bgm.loop = true;
+    bgm.volume = 0.13;
+}
+
+function toggleBGM(){
+    initBGM();
+    if(bgmPlaying){
+        bgm.pause();
+        bgmPlaying = false;
+    } else {
+        bgm.currentTime = 0;
+        bgm.play().catch(()=>{});
+        bgmPlaying = true;
+    }
+    updateMusicIcons();
+}
+
+function updateMusicIcons(){
+    const icon = bgmPlaying ? '🔊' : '🔇';
+    const mainBtn = document.getElementById('btnMusicMain');
+    const expBtn = document.getElementById('btnMusic');
+    if(mainBtn) mainBtn.textContent = icon;
+    if(expBtn) expBtn.textContent = icon;
+}
+
+/* Bar magnet responsive scaling */
+const BM_BASE_W = 1440; /* reference screen width for scale=1 */
+function updateBarMagnetScale(){
+    const bm = document.getElementById('barMagnetEl');
+    if(!bm || bm.style.display === 'none') return;
+    const scale = Math.max(0.62, Math.min(1.0, STAGE_W / BM_BASE_W));
+    bm.style.transform = 'scale(' + scale + ')';
+}
+
+document.addEventListener('DOMContentLoaded', ()=>{
+    layoutAppStage();
+    const cv = document.getElementById('threeCanvas');
+    cv.addEventListener('pointerdown', onDown);
+    cv.addEventListener('wheel', onWheel, {passive:true});
+
+    /* Auto-play BGM immediately */
+    initBGM();
+    bgm.play().then(()=>{ bgmPlaying=true; updateMusicIcons(); }).catch(()=>{
+        /* Browser blocked autoplay - start on first user interaction */
+        const startBGMOnce = ()=>{
+            if(!bgmPlaying){
+                bgm.play().then(()=>{ bgmPlaying=true; updateMusicIcons(); }).catch(()=>{});
+            }
+            document.removeEventListener('click', startBGMOnce);
+            document.removeEventListener('mousedown', startBGMOnce);
+            document.removeEventListener('touchstart', startBGMOnce);
+        };
+        document.addEventListener('click', startBGMOnce);
+        document.addEventListener('mousedown', startBGMOnce);
+        document.addEventListener('touchstart', startBGMOnce);
+    });
+
+    /* Resize handler for stage + bar magnet */
+    const syncLayout = ()=>{ layoutAppStage(); updateBarMagnetScale(); };
+    addEventListener('resize', syncLayout);
+    addEventListener('orientationchange', ()=> setTimeout(syncLayout, 250));
+    if(window.visualViewport){ visualViewport.addEventListener('resize', syncLayout); }
+});
+</script>
+</body>
+</html>
